@@ -1,0 +1,3 @@
+[submodule "keyvault-secret-output"]
+	path = keyvault-secret-output
+	url = https://github.com/bobvandevijver/azure-arm-keyvault-secret-output.git
