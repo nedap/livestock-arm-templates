@@ -1,0 +1,59 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "egrid_topic": {
+      "type": "string",
+      "metadata": {
+        "description": "The event grid topic name"
+      }
+    },
+    "egrid_domain": {
+      "type": "string",
+      "metadata": {
+        "description": "The event grid domain name"
+      }
+    },
+    "egrid_subscription_name": {
+      "type": "string",
+      "metadata": {
+        "description": "The event grid subscription name"
+      }
+    },
+    "endpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "The event grid webhook endpoint"
+      }
+    },
+    "endpoint_secret": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The event grid webhook endpoint shared secret"
+      }
+    },
+    "_tags": {
+      "type": "object",
+      "metadata": {
+        "description": "The event grid subscription tags"
+      }
+    }
+  },
+  "resources": [
+    {
+      "comments": "Event Grid Domain Topic Subscription",
+      "name": "[concat(parameters('egrid_domain'), '/' , parameters('egrid_topic'), '/Microsoft.EventGrid/', parameters('egrid_subscription_name'))]",
+      "type": "Microsoft.EventGrid/domains/topics/providers/eventSubscriptions",
+      "apiVersion": "2019-06-01",
+      "tags": "[parameters('_tags')]",
+      "properties": {
+        "destination": {
+          "endpointType": "WebHook",
+          "properties": {
+            "endpointUrl": "[concat(parameters('endpoint'), '?key=', parameters('endpoint_secret'))]"
+          }
+        }
+      }
+    }
+  ]
+}
