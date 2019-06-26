@@ -36,7 +36,8 @@
       "type": "object",
       "metadata": {
         "description": "The event grid subscription tags"
-      }
+      },
+      "defaultValue": {}
     }
   },
   "resources": [
