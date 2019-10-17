@@ -1,0 +1,54 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resource_name": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource that will store the authorization"
+      }
+    },
+    "principal": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal that must be linked"
+      }
+    },
+    "role": {
+      "type": "string",
+      "allowedValues": [
+        "Owner",
+        "Contributor",
+        "Reader",
+        "StorageBlobDataContributor"
+      ],
+      "metadata": {
+        "description": "Built-in role to assign"
+      }
+    },
+    "rule_name": {
+      "type": "string",
+      "metadata": {
+        "description": "Authorization rule name. Will be converted to a GUID"
+      }
+    }
+  },
+  "variables": {
+    "Owner": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+    "Contributor": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+    "Reader": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+    "StorageBlobDataContributor": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+  },
+  "resources": [
+    {
+      "comments": "Service principal authorization",
+      "name": "[concat(parameters('resource_name'), '/Microsoft.Authorization/', guid(concat(parameters('rule_name'), '-authorization')))]",
+      "type": "Microsoft.DataLakeStore/accounts/providers/roleAssignments",
+      "apiVersion": "2018-09-01-preview",
+      "properties": {
+        "roleDefinitionId": "[variables(parameters('role'))]",
+        "principalId": "[parameters('principal')]"
+      }
+    }
+  ]
+}
